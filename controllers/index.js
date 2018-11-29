@@ -1,7 +1,7 @@
 const Chatbot = require('darwin-sdk').Chatbot
 const Query = require('darwin-sdk').Query
 const OpenSkillEvent = require('darwin-sdk').OpenSkillEvent
-const config = require('./config')
+const config = require('../config')
 
 const index = async (ctx, next) => {
     await ctx.render('index.html');
@@ -64,7 +64,6 @@ const buildQueryBy = (request) => {
 }
 
 const getChatbotResponse = (request) => {
-    const request = ctx.request.body
     const agent = getAgentBySkillName(request.skillName)
 
     const chatbot = new Chatbot(config.chatbot_url, agent, config.source)

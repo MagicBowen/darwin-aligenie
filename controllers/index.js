@@ -14,7 +14,13 @@ var postQuery = async (ctx, next) => {
     "returnMessage": "",
     "returnValue": {
         "reply": "你好，欢迎进入课程表，功能正在开发中，请稍后...",
-        "resultType": "RESULT",
+        "resultType": "ASK_INF",
+        "askedInfos":[
+            {
+                "parameterName" : "any",
+                "intentId" : "default"
+            }
+        ],
         "properties": {},
         "executeCode": "SUCCESS",
         "msgInfo": ""

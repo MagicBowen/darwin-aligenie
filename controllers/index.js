@@ -18,7 +18,7 @@ var postQuery = async (ctx, next) => {
         "askedInfos":[
             {
                 "parameterName" : "any",
-                "intentId" : "default"
+                "intentId" : 28239
             }
         ],
         "properties": {},

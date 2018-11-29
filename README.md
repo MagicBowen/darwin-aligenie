@@ -1,1 +1,1 @@
-A KOA server kickoff framework.
+Project for connecting Darwin and Aligenie.

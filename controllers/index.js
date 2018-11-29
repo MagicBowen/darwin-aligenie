@@ -64,19 +64,19 @@ const buildQueryBy = (request) => {
     return query
 }
 
-const getChatbotResponse = (request) => {
+const getChatbotResponse = async (request) => {
     const agent = getAgentBySkillName(request.skillName)
 
     const chatbot = new Chatbot(config.chatbot_url, agent, config.source)
     const query = buildQueryBy(request)
-    const rsp = chatbot.dispose(query)
+    const rsp = await chatbot.dispose(query)
     return rsp.hasInstructOfQuit() ? getFinalResponse('SUCCESS', rsp) : getContinueResponse(request.intentId, rsp)
 }
 
 const postQuery = async (ctx, next) => {
     const request = ctx.request.body
     const agent = getAgentBySkillName(request.skillName)
-    const response = agent ? getChatbotResponse(request) : getFailResponse()
+    const response = agent ? await getChatbotResponse(request) : getFailResponse()
     ctx.response.type = "application/json"
     ctx.response.status = 200
     ctx.response.body = response

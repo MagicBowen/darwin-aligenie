@@ -98,6 +98,7 @@ const postQuery = async (ctx, next) => {
         response = agent ? await getChatbotResponse(request) : getFailResponse()
     } catch (err) {
         logger.error(JSON.stringify(err))
+        logger.error(JSON.stringify(err.stack))
         response = getFailResponse()
     }
     logger.debug(`reply : ${JSON.stringify(response)}`)

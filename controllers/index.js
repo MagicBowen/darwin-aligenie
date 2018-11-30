@@ -85,7 +85,13 @@ const getChatbotResponse = async (request) => {
 
     const chatbot = new Chatbot(config.chatbot_url, agent, config.source)
     const query = buildQueryBy(request)
+
+    logger.warn(JSON.stringify(query.body))
+
     const rsp = await chatbot.dispose(query)
+
+    logger.warn(JSON.stringify(rsp.body))
+
     return rsp.hasInstructOfQuit() ? getFinalResponse('SUCCESS', rsp) : getContinueResponse(request.intentId, rsp)
 }
 
@@ -95,6 +101,9 @@ const postQuery = async (ctx, next) => {
     let response = null
     try {
         const agent = getAgentBySkillName(request.skillName)
+
+        logger.warn(agent)
+
         response = agent ? await getChatbotResponse(request) : getFailResponse()
     } catch (err) {
         logger.error(JSON.stringify(err))

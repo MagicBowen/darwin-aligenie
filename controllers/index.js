@@ -73,7 +73,7 @@ const getFinalResponse = (code, chatbotRsp) => {
                 msgInfo: ""
             }
         }
-    }
+    })
 }
 
 const getFailResponse = () => {

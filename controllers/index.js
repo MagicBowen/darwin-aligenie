@@ -73,7 +73,9 @@ const isOpenApp = (request) => {
 const buildQueryBy = (request) => {
     const sessionId = request.sessionId
     const tocken = request.token
-    const query = isOpenApp(request) ? new OpenSkillEvent(sessionId) : new Query(sessionId, request.utterance)
+    const deviceId = request.requestData.SYMBOL_INPUT_CONTEXT_DEVICE_ID_KEY
+    const userId = deviceId ? deviceId : sessionId
+    const query = isOpenApp(request) ? new OpenSkillEvent(userId) : new Query(userId, request.utterance)
     if (tocken) query.setAccessTocken(tocken)
     return query
 }

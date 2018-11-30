@@ -66,7 +66,7 @@ const getFinalResponse = (code, chatbotRsp) => {
             returnErrorSolution: "",
             returnMessage: "",
             returnValue: {
-                reply: chatbotRsp.getReply(),
+                reply: chatbotRsp ? chatbotRsp.getReply() : "",
                 resultType: "RESULT",
                 properties: {},
                 executeCode: code,
@@ -77,7 +77,7 @@ const getFinalResponse = (code, chatbotRsp) => {
 }
 
 const getFailResponse = () => {
-    return getFinalResponse("PARAMS_ERROR", "请求发生错误，请稍后重试，谢谢！")
+    return getFinalResponse("PARAMS_ERROR")
 }
 
 const isOpenApp = (request) => {

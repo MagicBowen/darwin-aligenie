@@ -3,7 +3,7 @@ const Query = require('darwin-sdk').Query
 const OpenSkillEvent = require('darwin-sdk').OpenSkillEvent
 const Response = require('darwin-sdk').Response
 const config = require('../config')
-const logger = require('../utils/logger')('bot')
+const logger = require('../utils/logger').logger('bot')
 
 const index = async (ctx, next) => {
     await ctx.render('index.html');

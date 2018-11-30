@@ -28,7 +28,9 @@ const getReplyActions = (instructs) => {
 }
 
 const getTextReplyFromTts = (instructs) => {
-    return instructs.filter((i) => {return i.type == 'text'}).reduce((acc, i, _1, _2) => {return acc + i.reply})
+    return instructs.filter((i) => {return i.type == 'text'})
+                    .map((i) => {i.reply})
+                    .reduce((acc, i, _1, _2) => {return acc + i})
 }
 
 const buildResponseBy = (chatbotRsp, getBaseResponse) => {

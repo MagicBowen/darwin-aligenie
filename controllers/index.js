@@ -27,21 +27,11 @@ const getReplyActions = (instructs) => {
     return actions  
 }
 
-const getTextReplyFromTts = (instructs) => {
-    return instructs.filter((i) => {return i.type == 'text'})
-                    .map((i) => {i.reply})
-                    .reduce((acc, i, _1, _2) => {return acc + i})
-}
-
 const buildResponseBy = (chatbotRsp, getBaseResponse) => {
     const response = getBaseResponse()
     if (chatbotRsp && chatbotRsp.getInstructs()) {
         const actions = getReplyActions(chatbotRsp.getInstructs())
         if (actions) response.returnValue.actions = actions
-
-        if(response.returnValue.reply == '') {
-            response.returnValue.reply = getTextReplyFromTts(chatbotRsp.getInstructs())
-        }
     }
     return response
 }

@@ -17,49 +17,63 @@ const mapUrlToResourceId = (url) => {
     return ""
 }
 
-const getContinueResponse = (intentId, response) => {
-    return {
-        returnCode: "0",
-        returnErrorSolution: "",
-        returnMessage: "",
-        returnValue: {
-            reply: response.getReply(),
-            resultType: "ASK_INF",
-            askedInfos:[
-                {
-                    parameterName : "any",
-                    intentId : intentId
-                }
-            ],
-            properties: {},
-            executeCode: "SUCCESS",
-            msgInfo: ""
-        }
-    } 
-}
-
-const getFinalResponse = (code, response) => {
-    const result = {
-        returnCode: "0",
-        returnErrorSolution: "",
-        returnMessage: "",
-        returnValue: {
-            reply: response.getReply(),
-            resultType: "RESULT",
-            properties: {},
-            executeCode: code,
-            msgInfo: ""
-        }
-    }
+const getReplyActions = (instructs) => {
     const actions = []
-    for (let instruct of response.getInstructs()) {
+    for (let instruct of instructs) {
         if (instruct.type === 'play-audio') {
             actions.push({ name: "audioPlayGenieSource", properties: {audioGenieId : mapUrlToResourceId(instruct.url)}})
         }
     }
+    return actions  
+}
 
-    if (actions.length > 0) result.returnValue.actions = actions
-    return result
+const buildResponseBy = (chatbotRsp, getBaseResponse) => {
+    const response = getBaseResponse()
+    if (chatbotRsp.getInstructs()) {
+        const actions = getReplyActions(chatbotRsp.getInstructs())
+        if (actions) response.returnValue.actions = actions
+    }
+    return response      
+}
+
+const getContinueResponse = (intentId, chatbotRsp) => {
+    return buildResponseBy(chatbotRsp, () => {
+        return {
+            returnCode: "0",
+            returnErrorSolution: "",
+            returnMessage: "",
+            returnValue: {
+                reply: chatbotRsp.getReply(),
+                resultType: "ASK_INF",
+                askedInfos:[
+                    {
+                        parameterName : "any",
+                        intentId : intentId
+                    }
+                ],
+                properties: {},
+                executeCode: "SUCCESS",
+                msgInfo: ""
+            }
+        }         
+    })   
+}
+
+const getFinalResponse = (code, chatbotRsp) => {
+    return buildResponseBy(chatbotRsp, () => {
+        return {
+            returnCode: "0",
+            returnErrorSolution: "",
+            returnMessage: "",
+            returnValue: {
+                reply: chatbotRsp.getReply(),
+                resultType: "RESULT",
+                properties: {},
+                executeCode: code,
+                msgInfo: ""
+            }
+        }
+    }
 }
 
 const getFailResponse = () => {
@@ -85,13 +99,7 @@ const getChatbotResponse = async (request) => {
 
     const chatbot = new Chatbot(config.chatbot_url, agent, config.source)
     const query = buildQueryBy(request)
-
-    logger.warn(JSON.stringify(query.body))
-
     const rsp = await chatbot.dispose(query)
-
-    logger.warn(JSON.stringify(rsp.body))
-
     return rsp.hasInstructOfQuit() ? getFinalResponse('SUCCESS', rsp) : getContinueResponse(request.intentId, rsp)
 }
 
@@ -101,13 +109,14 @@ const postQuery = async (ctx, next) => {
     let response = null
     try {
         const agent = getAgentBySkillName(request.skillName)
-
-        logger.warn(agent)
-
         response = agent ? await getChatbotResponse(request) : getFailResponse()
     } catch (err) {
-        logger.error(JSON.stringify(err))
-        logger.error(JSON.stringify(err.stack))
+        if (err) { 
+            logger.error(JSON.stringify(err)) 
+            logger.error(JSON.stringify(err.stack))
+        } else {
+            logger.error('chatbot has no reply!!!')
+        }
         response = getFailResponse()
     }
     logger.debug(`reply : ${JSON.stringify(response)}`)

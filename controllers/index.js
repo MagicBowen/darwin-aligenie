@@ -92,8 +92,14 @@ const getChatbotResponse = async (request) => {
 const postQuery = async (ctx, next) => {
     const request = ctx.request.body
     logger.debug(`receive : ${JSON.stringify(request)}`)
-    const agent = getAgentBySkillName(request.skillName)
-    const response = agent ? await getChatbotResponse(request) : getFailResponse()
+    let response = null
+    try {
+        const agent = getAgentBySkillName(request.skillName)
+        response = agent ? await getChatbotResponse(request) : getFailResponse()
+    } catch (err) {
+        logger.error(JSON.stringify(err))
+        response = getFailResponse()
+    }
     logger.debug(`reply : ${JSON.stringify(response)}`)
     ctx.response.type = "application/json"
     ctx.response.status = 200

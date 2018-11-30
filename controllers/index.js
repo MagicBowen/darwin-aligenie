@@ -29,7 +29,7 @@ const getReplyActions = (instructs) => {
 
 const buildResponseBy = (chatbotRsp, getBaseResponse) => {
     const response = getBaseResponse()
-    if (chatbotRsp.getInstructs()) {
+    if (chatbotRsp && chatbotRsp.getInstructs()) {
         const actions = getReplyActions(chatbotRsp.getInstructs())
         if (actions) response.returnValue.actions = actions
     }

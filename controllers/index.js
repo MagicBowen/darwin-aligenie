@@ -14,7 +14,23 @@ const getAgentBySkillName = (skillName) => {
 }
 
 const mapUrlToResourceId = (url) => {
-    return ""
+    var id = ""
+    mapper = [
+        { url : "https://xiaodamp.cn/resource/audio/login/1.mp3", id : "14801" },
+        { url : "https://xiaodamp.cn/resource/audio/login/2.mp3", id : "14802" },
+        { url : "https://xiaodamp.cn/resource/audio/login/3.mp3", id : "14803" },
+        { url : "https://xiaodamp.cn/resource/audio/login/4.mp3", id : "14799" },
+        { url : "https://xiaodamp.cn/resource/audio/login/5.mp3", id : "14805" },
+        { url : "https://xiaodamp.cn/resource/audio/login/6.mp3", id : "14800" },
+        { url : "https://xiaodamp.cn/resource/audio/login/7.mp3", id : "14804" },
+        { url : "https://xiaodamp.cn/resource/audio/login/8.mp3", id : "14798" }
+    ]
+    for (let item of mapper) {
+        if (item.url === url) {
+            id = item.id
+        }
+    }
+    return id
 }
 
 const getReplyActions = (instructs) => {
